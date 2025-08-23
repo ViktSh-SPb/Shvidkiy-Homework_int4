@@ -1,0 +1,33 @@
+package org.example.shvidkiyhomework_int4;
+
+import org.springframework.stereotype.Component;
+
+/**
+ * @author Viktor Shvidkiy
+ */
+@Component
+public class UserMapper {
+    public UserDto entityToDto(UserEntity entity){
+        return UserDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .email(entity.getEmail())
+                .age(entity.getAge())
+                .createdAt(entity.getCreatedAt()!=null? entity.getCreatedAt().toString():null)
+                .build();
+    }
+
+    public UserEntity requestDtoToEntity(UserRequestDto dto){
+        return UserEntity.builder()
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .age(dto.getAge())
+                .build();
+    }
+
+    public void updateEntity(UserEntity entity, UserRequestDto dto){
+        entity.setName(dto.getName());
+        entity.setEmail(dto.getEmail());
+        entity.setAge(dto.getAge());
+    }
+}
