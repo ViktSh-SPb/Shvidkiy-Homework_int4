@@ -16,6 +16,7 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,7 +57,7 @@ public class UserControllerTest {
                         .build()
         );
 
-        Mockito.when(userService.getAllUsers()).thenReturn(users);
+        when(userService.getAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
@@ -82,7 +83,7 @@ public class UserControllerTest {
                 .createdAt(time)
                 .build();
 
-        Mockito.when(userService.getUserById(1)).thenReturn(Optional.of(dto));
+        when(userService.getUserById(1)).thenReturn(Optional.of(dto));
 
         mockMvc.perform(get("/users/1"))
                 .andExpect(status().isOk())
@@ -94,7 +95,7 @@ public class UserControllerTest {
 
     @Test
     void getUserByIdNotFound() throws Exception{
-        Mockito.when(userService.getUserById(100)).thenReturn(Optional.empty());
+        when(userService.getUserById(100)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/users/100"))
                 .andExpect(status().isNotFound());
@@ -116,7 +117,7 @@ public class UserControllerTest {
                 .createdAt(time)
                 .build();
 
-        Mockito.when(userService.updateUser(eq(1), any(UserRequestDto.class))).thenReturn(updatedDto);
+        when(userService.updateUser(eq(1), any(UserRequestDto.class))).thenReturn(updatedDto);
 
         mockMvc.perform(put("/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -137,7 +138,7 @@ public class UserControllerTest {
                 .age(25)
                 .build();
 
-        Mockito.when(userService.updateUser(eq(200), any(UserRequestDto.class)))
+        when(userService.updateUser(eq(200), any(UserRequestDto.class)))
                 .thenThrow(new RuntimeException("ID не найден"));
 
         mockMvc.perform(put("/users/200")
