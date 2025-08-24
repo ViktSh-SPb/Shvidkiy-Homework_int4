@@ -17,6 +17,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping
+    public UserDto createUser(@RequestBody UserRequestDto dto){
+        return userService.createUser(dto);
+    }
+
     @GetMapping
     public List<UserDto> getAllUsers(){
         return userService.getAllUsers();
@@ -29,6 +34,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Integer id,
                                               @RequestBody UserRequestDto dto){
         try{
@@ -38,6 +44,7 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id){
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
