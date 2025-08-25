@@ -1,9 +1,9 @@
 spring:
   application: name=Shvidkiy-Homework_int4
   datasource:
-    url: jdbc:postgresql://localhost:10000/learn_db
+    url: jdbc:postgresql://147.45.225.242:10001/learn_db
     username: user
-    password: user
+    password: AstonHomework2
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
