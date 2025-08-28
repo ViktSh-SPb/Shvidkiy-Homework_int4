@@ -1,11 +1,18 @@
 package org.example.shvidkiyhomework_int4;
 
+import org.example.shvidkiyhomework_int4.dto.UserDto;
+import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
+import org.example.shvidkiyhomework_int4.entity.UserEntity;
+import org.example.shvidkiyhomework_int4.repository.UserRepository;
+import org.example.shvidkiyhomework_int4.service.UserMapper;
+import org.example.shvidkiyhomework_int4.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -18,6 +25,8 @@ import static org.mockito.Mockito.*;
 /**
  * @author Viktor Shvidkiy
  */
+
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
     @Mock

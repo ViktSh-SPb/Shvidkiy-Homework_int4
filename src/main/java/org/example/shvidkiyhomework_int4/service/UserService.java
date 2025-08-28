@@ -1,5 +1,9 @@
-package org.example.shvidkiyhomework_int4;
+package org.example.shvidkiyhomework_int4.service;
 
+import org.example.shvidkiyhomework_int4.entity.UserEntity;
+import org.example.shvidkiyhomework_int4.repository.UserRepository;
+import org.example.shvidkiyhomework_int4.dto.UserDto;
+import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

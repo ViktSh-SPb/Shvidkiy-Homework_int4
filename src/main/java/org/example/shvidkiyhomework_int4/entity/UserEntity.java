@@ -1,4 +1,4 @@
-package org.example.shvidkiyhomework_int4;
+package org.example.shvidkiyhomework_int4.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

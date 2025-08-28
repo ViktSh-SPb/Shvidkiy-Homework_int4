@@ -1,6 +1,10 @@
 package org.example.shvidkiyhomework_int4;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.shvidkiyhomework_int4.controller.UserController;
+import org.example.shvidkiyhomework_int4.dto.UserDto;
+import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
+import org.example.shvidkiyhomework_int4.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

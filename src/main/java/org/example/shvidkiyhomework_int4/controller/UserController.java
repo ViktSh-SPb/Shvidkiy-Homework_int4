@@ -1,5 +1,8 @@
-package org.example.shvidkiyhomework_int4;
+package org.example.shvidkiyhomework_int4.controller;
 
+import org.example.shvidkiyhomework_int4.dto.UserDto;
+import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
+import org.example.shvidkiyhomework_int4.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

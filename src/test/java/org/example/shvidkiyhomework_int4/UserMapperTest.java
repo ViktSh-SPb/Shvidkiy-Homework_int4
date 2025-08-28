@@ -1,5 +1,9 @@
 package org.example.shvidkiyhomework_int4;
 
+import org.example.shvidkiyhomework_int4.dto.UserDto;
+import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
+import org.example.shvidkiyhomework_int4.entity.UserEntity;
+import org.example.shvidkiyhomework_int4.service.UserMapper;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

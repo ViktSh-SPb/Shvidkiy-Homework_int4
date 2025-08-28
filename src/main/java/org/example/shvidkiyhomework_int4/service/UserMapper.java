@@ -1,5 +1,8 @@
-package org.example.shvidkiyhomework_int4;
+package org.example.shvidkiyhomework_int4.service;
 
+import org.example.shvidkiyhomework_int4.entity.UserEntity;
+import org.example.shvidkiyhomework_int4.dto.UserDto;
+import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
 import org.springframework.stereotype.Component;
 
 /**
