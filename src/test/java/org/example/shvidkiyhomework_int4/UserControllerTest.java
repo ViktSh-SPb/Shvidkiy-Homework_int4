@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.shvidkiyhomework_int4.controller.UserController;
 import org.example.shvidkiyhomework_int4.dto.UserDto;
 import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
-import org.example.shvidkiyhomework_int4.service.UserService;
+import org.example.shvidkiyhomework_int4.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Test
     void getAllUsersShouldReturnList() throws Exception {
@@ -61,7 +61,7 @@ public class UserControllerTest {
                         .build()
         );
 
-        when(userService.getAllUsers()).thenReturn(users);
+        when(userServiceImpl.getAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
@@ -87,7 +87,7 @@ public class UserControllerTest {
                 .createdAt(time)
                 .build();
 
-        when(userService.getUserById(1)).thenReturn(Optional.of(dto));
+        when(userServiceImpl.getUserById(1)).thenReturn(Optional.of(dto));
 
         mockMvc.perform(get("/users/1"))
                 .andExpect(status().isOk())
@@ -99,7 +99,7 @@ public class UserControllerTest {
 
     @Test
     void getUserByIdNotFound() throws Exception{
-        when(userService.getUserById(100)).thenReturn(Optional.empty());
+        when(userServiceImpl.getUserById(100)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/users/100"))
                 .andExpect(status().isNotFound());
@@ -121,7 +121,7 @@ public class UserControllerTest {
                 .createdAt(time)
                 .build();
 
-        when(userService.updateUser(eq(1), any(UserRequestDto.class))).thenReturn(updatedDto);
+        when(userServiceImpl.updateUser(eq(1), any(UserRequestDto.class))).thenReturn(updatedDto);
 
         mockMvc.perform(put("/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -142,7 +142,7 @@ public class UserControllerTest {
                 .age(25)
                 .build();
 
-        when(userService.updateUser(eq(200), any(UserRequestDto.class)))
+        when(userServiceImpl.updateUser(eq(200), any(UserRequestDto.class)))
                 .thenThrow(new RuntimeException("ID не найден"));
 
         mockMvc.perform(put("/users/200")
@@ -156,6 +156,6 @@ public class UserControllerTest {
         mockMvc.perform(delete("/users/1"))
                 .andExpect(status().isNoContent());
 
-        Mockito.verify(userService).deleteUser(1);
+        Mockito.verify(userServiceImpl).deleteUser(1);
     }
 }

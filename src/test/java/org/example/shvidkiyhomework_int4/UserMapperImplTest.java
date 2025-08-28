@@ -3,7 +3,7 @@ package org.example.shvidkiyhomework_int4;
 import org.example.shvidkiyhomework_int4.dto.UserDto;
 import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
 import org.example.shvidkiyhomework_int4.entity.UserEntity;
-import org.example.shvidkiyhomework_int4.service.UserMapper;
+import org.example.shvidkiyhomework_int4.service.UserMapperImpl;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Viktor Shvidkiy
  */
-public class UserMapperTest {
-    private final UserMapper userMapper = new UserMapper();
+public class UserMapperImplTest {
+    private final UserMapperImpl userMapperImpl = new UserMapperImpl();
 
     @Test
     void testEntityToDto(){
@@ -28,7 +28,7 @@ public class UserMapperTest {
                 .createdAt(time)
                 .build();
 
-        UserDto dto = userMapper.entityToDto(entity);
+        UserDto dto = userMapperImpl.entityToDto(entity);
 
         assertAll(
                 ()->assertEquals(entity.getId(), dto.getId()),
@@ -48,7 +48,7 @@ public class UserMapperTest {
                 .age(20)
                 .build();
 
-        UserEntity entity = userMapper.requestDtoToEntity(requestDto);
+        UserEntity entity = userMapperImpl.userRequestDtoToEntity(requestDto);
 
         assertAll(
                 ()->assertNull(entity.getId()),
@@ -74,7 +74,7 @@ public class UserMapperTest {
                 .age(20)
                 .build();
 
-        userMapper.updateEntity(entity, updateDto);
+        userMapperImpl.updateEntity(entity, updateDto);
 
         assertAll(
                 ()->assertEquals("TomAfter", entity.getName()),
