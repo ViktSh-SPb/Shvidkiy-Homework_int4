@@ -27,5 +27,4 @@ public class UserEntity {
     private Integer age;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
 }

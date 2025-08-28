@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
                     userMapperImpl.updateEntity(user, dto);
                     return userMapperImpl.entityToDto(userRepository.save(user));
                 })
-                .orElseThrow(() -> new RuntimeException("ID не найден."));
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с ID: " + id + " не найден."));
     }
 
     @Transactional

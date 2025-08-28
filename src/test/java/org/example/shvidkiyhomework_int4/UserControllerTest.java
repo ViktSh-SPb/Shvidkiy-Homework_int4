@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.shvidkiyhomework_int4.controller.UserController;
 import org.example.shvidkiyhomework_int4.dto.UserDto;
 import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
-import org.example.shvidkiyhomework_int4.service.UserServiceImpl;
+import org.example.shvidkiyhomework_int4.exception.UserNotFoundException;
+import org.example.shvidkiyhomework_int4.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,7 +38,7 @@ public class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
 
     @Test
     void getAllUsersShouldReturnList() throws Exception {
@@ -61,7 +61,7 @@ public class UserControllerTest {
                         .build()
         );
 
-        when(userServiceImpl.getAllUsers()).thenReturn(users);
+        when(userService.getAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
@@ -76,34 +76,37 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[1].createdAt").value(time2));
     }
 
-//    @Test
-//    void getUserByIdFound() throws Exception {
-//        String time = LocalDateTime.now().toString();
-//        UserDto dto = UserDto.builder()
-//                .id(1)
-//                .name("Bob")
-//                .email("bob@gmail.com")
-//                .age(40)
-//                .createdAt(time)
-//                .build();
-//
-//        when(userServiceImpl.getUserById(1)).thenReturn(Optional.of(dto));
-//
-//        mockMvc.perform(get("/users/1"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.name").value("Bob"))
-//                .andExpect(jsonPath("$.email").value("bob@gmail.com"))
-//                .andExpect(jsonPath("$.age").value("40"))
-//                .andExpect(jsonPath("$.createdAt").value(time));
-//    }
+    @Test
+    void getUserByIdFound() throws Exception {
+        String time = LocalDateTime.now().toString();
+        UserDto dto = UserDto.builder()
+                .id(1)
+                .name("Bob")
+                .email("bob@gmail.com")
+                .age(40)
+                .createdAt(time)
+                .build();
 
-//    @Test
-//    void getUserByIdNotFound() throws Exception{
-//        when(userServiceImpl.getUserById(100)).thenReturn(Optional.empty());
-//
-//        mockMvc.perform(get("/users/100"))
-//                .andExpect(status().isNotFound());
-//    }
+        when(userService.getUserById(1)).thenReturn(dto);
+
+        mockMvc.perform(get("/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Bob"))
+                .andExpect(jsonPath("$.email").value("bob@gmail.com"))
+                .andExpect(jsonPath("$.age").value("40"))
+                .andExpect(jsonPath("$.createdAt").value(time));
+    }
+
+    @Test
+    void getUserByIdNotFound() throws Exception{
+        int userId = 100;
+        when(userService.getUserById(userId))
+                .thenThrow(new UserNotFoundException("Пользователь с ID: " + userId + " не найден."));
+
+        mockMvc.perform(get("/users/100"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Пользователь с ID: 100 не найден."));
+    }
 
     @Test
     void updateUserSuccess() throws Exception{
@@ -121,7 +124,7 @@ public class UserControllerTest {
                 .createdAt(time)
                 .build();
 
-        when(userServiceImpl.updateUser(eq(1), any(UserRequestDto.class))).thenReturn(updatedDto);
+        when(userService.updateUser(eq(1), any(UserRequestDto.class))).thenReturn(updatedDto);
 
         mockMvc.perform(put("/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -142,7 +145,7 @@ public class UserControllerTest {
                 .age(25)
                 .build();
 
-        when(userServiceImpl.updateUser(eq(200), any(UserRequestDto.class)))
+        when(userService.updateUser(eq(200), any(UserRequestDto.class)))
                 .thenThrow(new RuntimeException("ID не найден"));
 
         mockMvc.perform(put("/users/200")
@@ -156,6 +159,6 @@ public class UserControllerTest {
         mockMvc.perform(delete("/users/1"))
                 .andExpect(status().isNoContent());
 
-        Mockito.verify(userServiceImpl).deleteUser(1);
+        Mockito.verify(userService).deleteUser(1);
     }
 }
