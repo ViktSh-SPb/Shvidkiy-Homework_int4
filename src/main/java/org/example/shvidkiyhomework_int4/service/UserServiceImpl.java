@@ -1,6 +1,7 @@
 package org.example.shvidkiyhomework_int4.service;
 
 import org.example.shvidkiyhomework_int4.entity.UserEntity;
+import org.example.shvidkiyhomework_int4.exception.UserNotFoundException;
 import org.example.shvidkiyhomework_int4.repository.UserRepository;
 import org.example.shvidkiyhomework_int4.dto.UserDto;
 import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
@@ -15,7 +16,7 @@ import java.util.Optional;
  * @author Viktor Shvidkiy
  */
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapperImpl userMapperImpl;
 
@@ -40,9 +41,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Transactional
-    public Optional<UserDto> getUserById(Integer id) {
+    public UserDto getUserById(Integer id) {
         return userRepository.findById(id)
-                .map(userMapperImpl::entityToDto);
+                .map(userMapperImpl::entityToDto)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с ID: " + id + " не найден."));
     }
 
     @Transactional
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Transactional
-    public void deleteUser(Integer id){
+    public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
 }

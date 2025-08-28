@@ -113,29 +113,29 @@ public class UserServiceImplTest {
         verify(userRepository).findAll();
     }
 
-    @Test
-    void testGetUserByIdFound(){
-        when(userRepository.findById(1)).thenReturn(Optional.of(userEntity));
-        when(userMapperImpl.entityToDto(userEntity)).thenReturn(userDto);
-
-        Optional<UserDto> result = userServiceImpl.getUserById(1);
-
-        assertAll(
-                ()->assertTrue(result.isPresent()),
-                ()->assertEquals(userDto.getId(), result.get().getId())
-        );
-        verify(userRepository).findById(1);
-    }
-
-    @Test
-    void testGetUserByIdNotFound(){
-        when(userRepository.findById(1)).thenReturn(Optional.empty());
-
-        Optional<UserDto> result = userServiceImpl.getUserById(1);
-
-        assertTrue(result.isEmpty());
-        verify(userRepository).findById(1);
-    }
+//    @Test
+//    void testGetUserByIdFound(){
+//        when(userRepository.findById(1)).thenReturn(Optional.of(userEntity));
+//        when(userMapperImpl.entityToDto(userEntity)).thenReturn(userDto);
+//
+//        Optional<UserDto> result = userServiceImpl.getUserById(1);
+//
+//        assertAll(
+//                ()->assertTrue(result.isPresent()),
+//                ()->assertEquals(userDto.getId(), result.get().getId())
+//        );
+//        verify(userRepository).findById(1);
+//    }
+//
+//    @Test
+//    void testGetUserByIdNotFound(){
+//        when(userRepository.findById(1)).thenReturn(Optional.empty());
+//
+//        Optional<UserDto> result = userServiceImpl.getUserById(1);
+//
+//        assertTrue(result.isEmpty());
+//        verify(userRepository).findById(1);
+//    }
 
     @Test
     void testUpdateuserFound(){

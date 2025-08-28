@@ -31,10 +31,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Integer id){
-        return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public UserDto getUserById(@PathVariable Integer id){
+        return userService.getUserById(id);
     }
 
     @PutMapping("/{id}")

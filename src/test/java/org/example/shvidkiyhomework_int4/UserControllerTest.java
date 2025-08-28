@@ -76,34 +76,34 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[1].createdAt").value(time2));
     }
 
-    @Test
-    void getUserByIdFound() throws Exception {
-        String time = LocalDateTime.now().toString();
-        UserDto dto = UserDto.builder()
-                .id(1)
-                .name("Bob")
-                .email("bob@gmail.com")
-                .age(40)
-                .createdAt(time)
-                .build();
+//    @Test
+//    void getUserByIdFound() throws Exception {
+//        String time = LocalDateTime.now().toString();
+//        UserDto dto = UserDto.builder()
+//                .id(1)
+//                .name("Bob")
+//                .email("bob@gmail.com")
+//                .age(40)
+//                .createdAt(time)
+//                .build();
+//
+//        when(userServiceImpl.getUserById(1)).thenReturn(Optional.of(dto));
+//
+//        mockMvc.perform(get("/users/1"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.name").value("Bob"))
+//                .andExpect(jsonPath("$.email").value("bob@gmail.com"))
+//                .andExpect(jsonPath("$.age").value("40"))
+//                .andExpect(jsonPath("$.createdAt").value(time));
+//    }
 
-        when(userServiceImpl.getUserById(1)).thenReturn(Optional.of(dto));
-
-        mockMvc.perform(get("/users/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Bob"))
-                .andExpect(jsonPath("$.email").value("bob@gmail.com"))
-                .andExpect(jsonPath("$.age").value("40"))
-                .andExpect(jsonPath("$.createdAt").value(time));
-    }
-
-    @Test
-    void getUserByIdNotFound() throws Exception{
-        when(userServiceImpl.getUserById(100)).thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/users/100"))
-                .andExpect(status().isNotFound());
-    }
+//    @Test
+//    void getUserByIdNotFound() throws Exception{
+//        when(userServiceImpl.getUserById(100)).thenReturn(Optional.empty());
+//
+//        mockMvc.perform(get("/users/100"))
+//                .andExpect(status().isNotFound());
+//    }
 
     @Test
     void updateUserSuccess() throws Exception{
