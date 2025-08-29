@@ -3,7 +3,6 @@ package org.example.shvidkiyhomework_int4;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.shvidkiyhomework_int4.dto.UserDto;
 import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
-import org.example.shvidkiyhomework_int4.entity.UserEntity;
 import org.example.shvidkiyhomework_int4.exception.UserNotFoundException;
 import org.example.shvidkiyhomework_int4.repository.UserRepository;
 import org.example.shvidkiyhomework_int4.service.UserService;
@@ -88,58 +87,52 @@ public class UserControllerIntegrationTest {
 
     @Test
     void getAllUsersShouldReturnList() throws Exception {
-        userRepository.save(UserEntity.builder()
-                .name("Jack")
-                .email("jack@gmail.com")
-                .age(30)
-                .createdAt(LocalDateTime.now())
+        UserDto user1 = userService.createUser(UserRequestDto.builder()
+                        .name("Jack")
+                        .email("jack@gmail.com")
+                        .age(30)
                 .build());
-        userRepository.save(UserEntity.builder()
+        UserDto user2 = userService.createUser(UserRequestDto.builder()
                 .name("Bill")
                 .email("bill@gmail.com")
                 .age(35)
-                .createdAt(LocalDateTime.now())
                 .build());
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].name").value("Jack"))
-                .andExpect(jsonPath("$[0].email").value("jack@gmail.com"))
-                .andExpect(jsonPath("$[0].age").value("30"))
-                .andExpect(jsonPath("$[0].createdAt").isNotEmpty())
-                .andExpect(jsonPath("$[1].name").value("Bill"))
-                .andExpect(jsonPath("$[1].email").value("bill@gmail.com"))
-                .andExpect(jsonPath("$[1].age").value("35"))
-                .andExpect(jsonPath("$[1].createdAt").isNotEmpty());
+                .andExpect(jsonPath("$[0].id").value(user1.getId()))
+                .andExpect(jsonPath("$[0].name").value(user1.getName()))
+                .andExpect(jsonPath("$[0].email").value(user1.getEmail()))
+                .andExpect(jsonPath("$[0].age").value(user1.getAge()))
+                .andExpect(jsonPath("$[0].createdAt").value(user1.getCreatedAt()))
+                .andExpect(jsonPath("$[1].id").value(user2.getId()))
+                .andExpect(jsonPath("$[1].name").value(user2.getName()))
+                .andExpect(jsonPath("$[1].email").value(user2.getEmail()))
+                .andExpect(jsonPath("$[1].age").value(user2.getAge()))
+                .andExpect(jsonPath("$[1].createdAt").value(user2.getCreatedAt()));
     }
 
     @Test
     void getUserByIdFound() throws Exception {
-        String time = LocalDateTime.now().toString();
-        UserDto dto = UserDto.builder()
-                .id(1)
-                .name("Bob")
-                .email("bob@gmail.com")
-                .age(40)
-                .createdAt(time)
-                .build();
+        UserDto user = userService.createUser(UserRequestDto.builder()
+                .name("Jack")
+                .email("jack@gmail.com")
+                .age(30)
+                .build());
 
-        when(userService.getUserById(1)).thenReturn(dto);
-
-        mockMvc.perform(get("/users/1"))
+        mockMvc.perform(get("/users/{id}", user.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Bob"))
-                .andExpect(jsonPath("$.email").value("bob@gmail.com"))
-                .andExpect(jsonPath("$.age").value("40"))
-                .andExpect(jsonPath("$.createdAt").value(time));
+                .andExpect(jsonPath("$.id").value(user.getId()))
+                .andExpect(jsonPath("$.name").value(user.getName()))
+                .andExpect(jsonPath("$.email").value(user.getEmail()))
+                .andExpect(jsonPath("$.age").value(user.getAge()))
+                .andExpect(jsonPath("$.createdAt").value(user.getCreatedAt()));
     }
 
     @Test
     void getUserByIdNotFound() throws Exception{
         int userId = 100;
-        when(userService.getUserById(userId))
-                .thenThrow(new UserNotFoundException("Пользователь с ID: " + userId + " не найден."));
 
         mockMvc.perform(get("/users/100"))
                 .andExpect(status().isNotFound())
@@ -148,31 +141,27 @@ public class UserControllerIntegrationTest {
 
     @Test
     void updateUserSuccess() throws Exception{
-        String time = LocalDateTime.now().toString();
-        UserRequestDto requestDto = UserRequestDto.builder()
-                .name("Tom")
-                .email("tom@gmail.com")
-                .age(20)
-                .build();
-        UserDto updatedDto = UserDto.builder()
-                .id(1)
-                .name("Tom")
-                .email("tom@gmail.com")
-                .age(20)
-                .createdAt(time)
+        UserDto user = userService.createUser(UserRequestDto.builder()
+                .name("Jack")
+                .email("jack@gmail.com")
+                .age(30)
+                .build());
+
+        UserRequestDto updatedUser = UserRequestDto.builder()
+                .name("MrJack")
+                .email("ceo_jack@gmail.com")
+                .age(31)
                 .build();
 
-        when(userService.updateUser(eq(1), any(UserRequestDto.class))).thenReturn(updatedDto);
-
-        mockMvc.perform(put("/users/1")
+        mockMvc.perform(put("/users/{id}", user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
+                        .content(objectMapper.writeValueAsString(updatedUser)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.name").value("Tom"))
-                .andExpect(jsonPath("$.email").value("tom@gmail.com"))
-                .andExpect(jsonPath("$.age").value("20"))
-                .andExpect(jsonPath("$.createdAt").value(time));
+                .andExpect(jsonPath("$.id").value(user.getId()))
+                .andExpect(jsonPath("$.name").value(updatedUser.getName()))
+                .andExpect(jsonPath("$.email").value(updatedUser.getEmail()))
+                .andExpect(jsonPath("$.age").value(updatedUser.getAge()))
+                .andExpect(jsonPath("$.createdAt").value(user.getCreatedAt()));
     }
 
     @Test
@@ -183,20 +172,16 @@ public class UserControllerIntegrationTest {
                 .age(25)
                 .build();
 
-        when(userService.updateUser(eq(200), any(UserRequestDto.class)))
-                .thenThrow(new RuntimeException("ID не найден"));
-
         mockMvc.perform(put("/users/200")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Пользователь с ID: 200 не найден."));
     }
 
     @Test
     void deleteUserSuccess() throws Exception{
         mockMvc.perform(delete("/users/1"))
                 .andExpect(status().isNoContent());
-
-        Mockito.verify(userService).deleteUser(1);
     }
 }

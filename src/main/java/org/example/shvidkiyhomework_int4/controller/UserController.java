@@ -36,13 +36,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Integer id,
-                                              @RequestBody UserRequestDto dto){
-        try{
-            return ResponseEntity.ok(userService.updateUser(id, dto));
-        } catch (RuntimeException e){
-            return ResponseEntity.notFound().build();
-        }
+    public UserDto updateUser(@PathVariable Integer id,
+                              @RequestBody UserRequestDto dto){
+        return userService.updateUser(id, dto);
     }
 
     @DeleteMapping("/{id}")
