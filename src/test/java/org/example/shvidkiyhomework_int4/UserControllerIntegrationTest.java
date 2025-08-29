@@ -3,11 +3,9 @@ package org.example.shvidkiyhomework_int4;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.shvidkiyhomework_int4.dto.UserDto;
 import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
-import org.example.shvidkiyhomework_int4.exception.UserNotFoundException;
 import org.example.shvidkiyhomework_int4.repository.UserRepository;
 import org.example.shvidkiyhomework_int4.service.UserService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,12 +19,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDateTime;
-
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
