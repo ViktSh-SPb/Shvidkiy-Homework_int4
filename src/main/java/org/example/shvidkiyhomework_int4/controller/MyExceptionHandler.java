@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class MyExceptionHandler {
 
-
     @ExceptionHandler
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex){
         return ResponseEntity

@@ -3,16 +3,15 @@ package org.example.shvidkiyhomework_int4;
 import org.example.shvidkiyhomework_int4.dto.UserDto;
 import org.example.shvidkiyhomework_int4.dto.UserRequestDto;
 import org.example.shvidkiyhomework_int4.entity.UserEntity;
+import org.example.shvidkiyhomework_int4.exception.UserNotFoundException;
 import org.example.shvidkiyhomework_int4.repository.UserRepository;
-import org.example.shvidkiyhomework_int4.service.UserMapperImpl;
+import org.example.shvidkiyhomework_int4.service.UserMapper;
 import org.example.shvidkiyhomework_int4.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -25,18 +24,16 @@ import static org.mockito.Mockito.*;
 /**
  * @author Viktor Shvidkiy
  */
-
-@ExtendWith(MockitoExtension.class)
-public class UserServiceImplTest {
+public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
 
     @Mock
-    private UserMapperImpl userMapperImpl;
+    private UserMapper userMapper;
 
     @InjectMocks
-    private UserServiceImpl userServiceImpl;
+    private UserServiceImpl userService;
 
     private UserEntity userEntity;
     private UserDto userDto;
@@ -71,11 +68,11 @@ public class UserServiceImplTest {
 
     @Test
     void testCreateuser(){
-        when(userMapperImpl.userRequestDtoToEntity(userRequestDto)).thenReturn(userEntity);
+        when(userMapper.userRequestDtoToEntity(userRequestDto)).thenReturn(userEntity);
         when(userRepository.save(userEntity)).thenReturn(userEntity);
-        when(userMapperImpl.entityToDto(userEntity)).thenReturn(userDto);
+        when(userMapper.entityToDto(userEntity)).thenReturn(userDto);
 
-        UserDto result = userServiceImpl.createUser(userRequestDto);
+        UserDto result = userService.createUser(userRequestDto);
 
         assertAll(
                 ()->assertNotNull(result),
@@ -89,9 +86,9 @@ public class UserServiceImplTest {
         List<UserEntity> users = Arrays.asList(userEntity);
 
         when(userRepository.findAll()).thenReturn(users);
-        when(userMapperImpl.entityToDto(userEntity)).thenReturn(userDto);
+        when(userMapper.entityToDto(userEntity)).thenReturn(userDto);
 
-        List<UserDto> result = userServiceImpl.getAllUsers();
+        List<UserDto> result = userService.getAllUsers();
 
         assertAll(
                 ()->assertEquals(1, result.size()),
@@ -104,7 +101,7 @@ public class UserServiceImplTest {
     void testGetAllUsersEmpty(){
         when(userRepository.findAll()).thenReturn(List.of());
 
-        List<UserDto> result = userServiceImpl.getAllUsers();
+        List<UserDto> result = userService.getAllUsers();
 
         assertAll(
                 ()->assertNotNull(result),
@@ -113,29 +110,32 @@ public class UserServiceImplTest {
         verify(userRepository).findAll();
     }
 
-//    @Test
-//    void testGetUserByIdFound(){
-//        when(userRepository.findById(1)).thenReturn(Optional.of(userEntity));
-//        when(userMapperImpl.entityToDto(userEntity)).thenReturn(userDto);
-//
-//        Optional<UserDto> result = userServiceImpl.getUserById(1);
-//
-//        assertAll(
-//                ()->assertTrue(result.isPresent()),
-//                ()->assertEquals(userDto.getId(), result.get().getId())
-//        );
-//        verify(userRepository).findById(1);
-//    }
-//
-//    @Test
-//    void testGetUserByIdNotFound(){
-//        when(userRepository.findById(1)).thenReturn(Optional.empty());
-//
-//        Optional<UserDto> result = userServiceImpl.getUserById(1);
-//
-//        assertTrue(result.isEmpty());
-//        verify(userRepository).findById(1);
-//    }
+    @Test
+    void testGetUserByIdFound(){
+        when(userRepository.findById(1)).thenReturn(Optional.of(userEntity));
+        when(userMapper.entityToDto(userEntity)).thenReturn(userDto);
+
+        UserDto result = userService.getUserById(1);
+
+        assertAll(
+                ()->assertNotNull(result),
+                ()->assertEquals(userDto.getId(), result.getId())
+        );
+        verify(userRepository).findById(1);
+    }
+
+    @Test
+    void testGetUserByIdNotFound() {
+        when(userRepository.findById(1)).thenReturn(Optional.empty());
+
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
+                () -> userService.getUserById(1)
+        );
+
+        assertEquals("Пользователь с ID: 1 не найден.", exception.getMessage());
+        verify(userRepository).findById(1);
+    }
 
     @Test
     void testUpdateuserFound(){
@@ -168,11 +168,11 @@ public class UserServiceImplTest {
             entity.setEmail(updateDto.getEmail());
             entity.setAge(updateDto.getAge());
             return null;
-        }).when(userMapperImpl).updateEntity(userEntity, updateDto);
+        }).when(userMapper).updateEntity(userEntity, updateDto);
         when(userRepository.save(userEntity)).thenReturn(updatedEntity);
-        when(userMapperImpl.entityToDto(updatedEntity)).thenReturn(updatedDto);
+        when(userMapper.entityToDto(updatedEntity)).thenReturn(updatedDto);
 
-        UserDto result = userServiceImpl.updateUser(1,updateDto);
+        UserDto result = userService.updateUser(1,updateDto);
 
         assertAll(
                 ()->assertEquals("MrJack", result.getName()),
@@ -188,16 +188,16 @@ public class UserServiceImplTest {
         when(userRepository.findById(1)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, ()->{
-            userServiceImpl.updateUser(1,userRequestDto);
+            userService.updateUser(1,userRequestDto);
         });
-        assertEquals("ID не найден.", exception.getMessage());
+        assertEquals("Пользователь с ID: 1 не найден.", exception.getMessage());
         verify(userRepository).findById(1);
     }
 
     @Test
     void testDeleteUser(){
         doNothing().when(userRepository).deleteById(1);
-        userServiceImpl.deleteUser(1);
+        userService.deleteUser(1);
         verify(userRepository).deleteById(1);
     }
 }
